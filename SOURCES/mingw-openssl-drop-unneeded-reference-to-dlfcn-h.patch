@@ -1,0 +1,10 @@
+--- crypto/fips/fips.c.orig	2010-10-07 23:33:08.293664062 +0200
++++ crypto/fips/fips.c	2010-10-07 23:33:20.723360688 +0200
+@@ -57,7 +57,6 @@
+ #include <openssl/rsa.h>
+ #include <string.h>
+ #include <limits.h>
+-#include <dlfcn.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include "fips_locl.h"
