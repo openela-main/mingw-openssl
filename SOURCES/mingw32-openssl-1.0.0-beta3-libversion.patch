@@ -1,0 +1,50 @@
+diff -up openssl-1.0.0-beta3/Makefile.org.mingw-libversion openssl-1.0.0-beta3/Makefile.org
+--- openssl-1.0.0-beta3/Makefile.org.mingw-libversion	2009-08-29 22:44:10.000000000 +0300
++++ openssl-1.0.0-beta3/Makefile.org	2009-08-29 22:45:42.000000000 +0300
+@@ -542,8 +542,8 @@ install_sw:
+ 				fi ); \
+ 				if expr $(PLATFORM) : 'mingw' > /dev/null; then \
+ 				(	case $$i in \
+-						*crypto*) i=libeay32.dll;; \
+-						*ssl*)    i=ssleay32.dll;; \
++						*crypto*) i=libcrypto-$(SHLIB_SONAMEVER).dll;; \
++						*ssl*)    i=libssl-$(SHLIB_SONAMEVER).dll;; \
+ 					esac; \
+ 					echo installing $$i; \
+ 	 				cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/bin/$$i.new; \
+diff -up openssl-1.0.0-beta3/Makefile.shared.mingw-libversion openssl-1.0.0-beta3/Makefile.shared
+--- openssl-1.0.0-beta3/Makefile.shared.mingw-libversion	2009-08-29 22:33:22.000000000 +0300
++++ openssl-1.0.0-beta3/Makefile.shared	2009-08-29 22:33:22.000000000 +0300
+@@ -47,7 +47,7 @@ LIBEXTRAS=
+ # LIBVERSION contains the current version of the library.
+ # For example, to build libfoo.so.1.2, you need to do the following:
+ #LIBVERSION=1.2
+-LIBVERSION=
++LIBVERSION=10
+ 
+ # LIBCOMPATVERSIONS contains the compatibility versions (a list) of
+ # the library.  They MUST be in decreasing order.
+@@ -250,7 +250,7 @@ link_o.cygwin:
+ 	base=-Wl,--enable-auto-image-base; \
+ 	deffile=; \
+ 	if expr $(PLATFORM) : 'mingw' > /dev/null; then \
+-		SHLIB=$(LIBNAME)eay32; base=; \
++		SHLIB=lib$(LIBNAME); base=; \
+ 		if test -f $(LIBNAME)eay32.def; then \
+ 			deffile=$(LIBNAME)eay32.def; \
+ 		fi; \
+@@ -282,13 +282,7 @@
+ 	dll_name=$$SHLIB$$SHLIB_SOVER$$SHLIB_SUFFIX; extras=; \
+ 	base=-Wl,--enable-auto-image-base; \
+ 	if expr $(PLATFORM) : 'mingw' > /dev/null; then \
+-		case $(LIBNAME) in \
+-			crypto) SHLIB=libeay;; \
+-			ssl) SHLIB=ssleay;; \
+-		esac; \
+-		SHLIB_SOVER=32; \
+-		extras="$(LIBNAME).def"; \
+-		$(PERL) util/mkdef.pl 32 $$SHLIB > $$extras; \
++		SHLIB=lib$(LIBNAME); \
+ 		base=; [ $(LIBNAME) = "crypto" -a -n "$(FIPSCANLIB)" ] && base=-Wl,--image-base,0x63000000; \
+ 	fi; \
+ 	dll_name=$$SHLIB$$SHLIB_SOVER$$SHLIB_SUFFIX; \

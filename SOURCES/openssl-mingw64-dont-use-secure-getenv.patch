@@ -1,0 +1,26 @@
+diff --git a/crypto/asn1/a_verify.c b/crypto/asn1/a_verify.c
+index 23271be..f57ca72 100644
+--- a/crypto/asn1/a_verify.c
++++ b/crypto/asn1/a_verify.c
+@@ -143,7 +143,7 @@ static int is_md_legacy_disallowed(int mdnid)
+ {
+     int i;
+ 
+-    if (mdnid == NID_md5 && secure_getenv("OPENSSL_ENABLE_MD5_VERIFY") != NULL)
++    if (mdnid == NID_md5 && getenv("OPENSSL_ENABLE_MD5_VERIFY") != NULL)
+         return 0;
+ 
+     for (i = 0; legacy_mds[i] != 0; ++i) {
+diff --git a/ssl/ssl_ciph.c b/ssl/ssl_ciph.c
+index 732804f..8f845f7 100644
+--- a/ssl/ssl_ciph.c
++++ b/ssl/ssl_ciph.c
+@@ -486,7 +486,7 @@ static void load_builtin_compressions(void)
+             MemCheck_off();
+             ssl_comp_methods = sk_SSL_COMP_new(sk_comp_cmp);
+             if (ssl_comp_methods != NULL
+-                && secure_getenv("OPENSSL_DEFAULT_ZLIB") != NULL) {
++                && getenv("OPENSSL_DEFAULT_ZLIB") != NULL) {
+                 comp = (SSL_COMP *)OPENSSL_malloc(sizeof(SSL_COMP));
+                 if (comp != NULL) {
+                     comp->method = COMP_zlib();

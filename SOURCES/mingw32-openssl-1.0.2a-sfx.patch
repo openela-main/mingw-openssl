@@ -1,0 +1,14 @@
+--- openssl-1.0.2a/engines/Makefile.enginesdir	2015-03-19 14:31:14.000000000 +0100
++++ openssl-1.0.2a/engines/Makefile	2015-04-24 18:27:12.875788913 +0200
+@@ -111,7 +111,10 @@
+ 		for l in $(LIBNAMES); do \
+ 			( echo installing $$l; \
+ 			  pfx=lib; \
+-			  if expr "$(PLATFORM)" : "Cygwin" >/dev/null; then \
++			  if [ "$(PLATFORM)" = "mingw" ]; then \
++			       sfx=.dll; \
++			      cp $$pfx$$l$$sfx $(INSTALL_PREFIX)$(INSTALLTOP)/lib/engines/$$pfx$$l$$sfx.new; \
++			  elif expr "$(PLATFORM)" : "Cygwin" >/dev/null; then \
+ 				sfx=".so"; \
+ 				cp cyg$$l.dll $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/engines/$$pfx$$l$$sfx.new; \
+ 			  else \

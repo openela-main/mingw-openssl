@@ -1,0 +1,97 @@
+--- openssl-1.0.1c/crypto/fips/fips_rand_selftest.c.orig	2012-11-03 18:59:03.620066556 +0100
++++ openssl-1.0.1c/crypto/fips/fips_rand_selftest.c	2012-11-03 19:57:33.156686682 +0100
+@@ -47,6 +47,8 @@
+  *
+  */
+ 
++#ifdef OPENSSL_FIPS
++
+ #include <string.h>
+ #include <openssl/err.h>
+ #include <openssl/fips.h>
+@@ -54,8 +56,6 @@
+ #include <openssl/fips_rand.h>
+ #include "fips_locl.h"
+ 
+-#ifdef OPENSSL_FIPS
+-
+ typedef struct {
+     unsigned char DT[16];
+     unsigned char V[16];
+--- openssl-1.0.1c/crypto/fips/fips_dsa_selftest.c.orig	2012-11-03 20:03:20.546180631 +0100
++++ openssl-1.0.1c/crypto/fips/fips_dsa_selftest.c	2012-11-03 20:03:46.069328396 +0100
+@@ -47,6 +47,8 @@
+  *
+  */
+ 
++#ifdef OPENSSL_FIPS
++
+ #include <string.h>
+ #include <openssl/crypto.h>
+ #include <openssl/dsa.h>
+@@ -56,8 +58,6 @@
+ #include <openssl/bn.h>
+ #include "fips_locl.h"
+ 
+-#ifdef OPENSSL_FIPS
+-
+ static const unsigned char dsa_test_2048_p[] = {
+     0xa8, 0x53, 0x78, 0xd8, 0xfd, 0x3f, 0x8d, 0x72, 0xec, 0x74, 0x18, 0x08,
+     0x0d, 0xa2, 0x13, 0x17, 0xe4, 0x3e, 0xc4, 0xb6, 0x2b, 0xa8, 0xc8, 0x62,
+--- openssl-1.0.1c/crypto/fips/fips_rand.c.orig	2012-11-03 20:07:49.956891942 +0100
++++ openssl-1.0.1c/crypto/fips/fips_rand.c	2012-11-03 20:08:14.260048118 +0100
+@@ -47,6 +47,8 @@
+  *
+  */
+ 
++#ifdef OPENSSL_FIPS
++
+ /*
+  * This is a FIPS approved AES PRNG based on ANSI X9.31 A.2.4.
+  */
+@@ -82,8 +84,6 @@
+ #include <openssl/fips.h>
+ #include "fips_locl.h"
+ 
+-#ifdef OPENSSL_FIPS
+-
+ void *OPENSSL_stderr(void);
+ 
+ # define AES_BLOCK_LENGTH        16
+--- openssl-1.0.1c/crypto/rand/md_rand.c.orig	2012-11-03 20:19:31.461754618 +0100
++++ openssl-1.0.1c/crypto/rand/md_rand.c	2012-11-03 20:20:58.294282662 +0100
+@@ -394,7 +394,11 @@
+     /* always poll for external entropy in FIPS mode, drbg provides the 
+      * expansion
+      */
++#ifdef OPENSSL_FIPS
+     if (!initialized || FIPS_module_mode()) {
++#else
++    if (!initialized) {
++#endif
+         RAND_poll();
+         initialized = 1;
+     }
+--- openssl-1.0.1c/crypto/opensslconf.h.in	2012-11-09 20:34:03.434391630 +0100
++++ openssl-1.0.1c/crypto/opensslconf.h.in.fips	2005-12-16 11:37:23.000000000 +0100
+@@ -1,20 +1,5 @@
+ /* crypto/opensslconf.h.in */
+ 
+-#ifdef OPENSSL_DOING_MAKEDEPEND
+-
+-/* Include any symbols here that have to be explicitly set to enable a feature
+- * that should be visible to makedepend.
+- *
+- * [Our "make depend" doesn't actually look at this, we use actual build settings
+- * instead; we want to make it easy to remove subdirectories with disabled algorithms.]
+- */
+-
+-#ifndef OPENSSL_FIPS
+-#define OPENSSL_FIPS
+-#endif
+-
+-#endif
+-
+ /* Generate 80386 code? */
+ #undef I386_ONLY
+ 
